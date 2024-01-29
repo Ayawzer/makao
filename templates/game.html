@@ -1,0 +1,22 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Makao Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</head>
+<body>
+    <div id="game">
+        <div id="player-hand" class="hand"></div>
+        <div id="computer-hand" class="hand"></div>
+        <div id="discard-pile"></div>
+        <div id="chat">
+            <p>Game started</p>
+        </div>
+        <button id="draw-button">Draw Card</button>
+        <input type="text" id="play-input" placeholder="Enter card to play">
+        <button id="play-button">Play Card</button>
+        <div id="message"></div>
+    </div>
+</body>
+</html>

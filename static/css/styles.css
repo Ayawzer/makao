@@ -1,0 +1,22 @@
+/* Basic styles - you can expand and customize these */
+.hand {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+#discard-pile, #chat {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    min-height: 100px;
+}
+
+#chat > p {
+    margin: 0;
+}
+
+.error {
+    color: red;
+}
+/* Further styles for cards, buttons, etc., go here */
