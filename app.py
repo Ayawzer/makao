@@ -1,6 +1,5 @@
 from flask import Flask, render_template, jsonify, request, session
 from game.models import Game, Card
-from datetime import timedelta
 
 app = Flask(__name__)
 app.secret_key = 'secret'
@@ -15,7 +14,7 @@ def index():
 def gam():
     return render_template('game.html')
 
-@app.route('/clear')
+@app.route('/clear') # Wyczyszczenie sesji - debugging purposes
 def clear():
     session.clear()
     return 'OK'
@@ -28,6 +27,15 @@ def start_game():
     else:
         game.set_state(session['game_state'])
     return jsonify(session['game_state'])
+
+@app.route('/new_game', methods=['GET'])
+def new_game():
+    global game
+    session.pop('game_state', None)  # Clear the game state in the session
+    game = Game()  # Reassign the global game instance
+    game.start()  # Start a new game
+    session['game_state'] = game.get_state()  # Save the new game state in the session
+    return jsonify(session['game_state'])  # Send the new game state to the frontend
 
 @app.route('/play', methods=['POST'])
 def play():

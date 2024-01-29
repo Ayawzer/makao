@@ -10,6 +10,11 @@
     padding: 10px;
     border: 1px solid black;
     min-height: 100px;
+    max-height: 200px;
+}
+
+#chat {
+    overflow-y: scroll;
 }
 
 #chat > p {
@@ -19,4 +24,13 @@
 .error {
     color: red;
 }
+
+.win {
+    color: green;
+}
+
+.info {
+    color: blue;
+}
+
 /* Further styles for cards, buttons, etc., go here */
