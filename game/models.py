@@ -26,6 +26,7 @@ class Game:
         self.computer_hand = []
         self.deck = self.create_deck()
         self.discard_pile = []
+        self.cards_to_draw = 0
 
     def set_state(self, state_dict):
         #Zapamiętaj stan gry
@@ -53,9 +54,31 @@ class Game:
         # Wykonaj ruch komputera
         top_card = self.discard_pile[-1]
         for card in self.computer_hand:
+            # Sprawdz czy zostala zagrana specjalna karta do dobierania
+            if self.cards_to_draw > 0:
+                # Szukaj 2 w rece komputera
+                if card.rank != '2': continue
+                # Znalazlem 2, zagraj i dodaj wartosc do cards_to_draw
+                if card.rank == '2':
+                    self.computer_hand.remove(card)
+                    self.discard_pile.append(card)
+                    self.cards_to_draw += 2
+                    print('xxxxx', self.cards_to_draw)
+                    return {'success': True, 'message': 'Oboże, Komputer zagrał ' + str(card), **self.get_state()}
+                # nie znalazlem, wiec dobierz karty i wyzeruj cards_to_draw
+                else:
+                    for _ in range(self.cards_to_draw):
+                        self.computer_hand.append(self.deck.pop())
+                        self.cards_to_draw = 0
+                return {'success': True, 'message': 'Komputer zaciągnął 2 karty', **self.get_state()}
             if card.rank == top_card.rank or card.suit == top_card.suit:
                 self.computer_hand.remove(card)
                 self.discard_pile.append(card)
+                # zagrana 2 przez komputer, wiec dodaj wartosc do cards_to_draw
+                if card.rank == '2':
+                    self.cards_to_draw += 2
+                    print('kompik', self.cards_to_draw)
+
                 if len(self.computer_hand) == 0:
                     return {'success': True, 
                             'message': 'Komputer wygrał!', 
@@ -71,15 +94,23 @@ class Game:
 
     def play_card(self, card):
         random.shuffle(self.deck)
-        # Check if the card is in the player's hand
+        # Sprawdz czy karta jest w rece
         if card not in self.player_hand: return {'success': False, 'message': 'Nie posadasz tej karty', **self.get_state()}
-        # Check if the card can be played
+        # Sprawdz czy karta moze byc zagrana
         top_card = self.discard_pile[-1]
         if card.rank != top_card.rank and card.suit != top_card.suit:
             return {'success': False, 'message': 'Karta nie może być zagrana', **self.get_state()}
-        # Play the card
+        # Sprawdz czy karta jest specjalna i czy twoja wybrana moze byc zagrana
+        if self.cards_to_draw > 0 and card.rank != '2':
+            return {'success': False, 'message': 'Musisz zagrać specjalna karte', **self.get_state()}
+        # Zagraj karte
         self.player_hand.remove(card)
         self.discard_pile.append(card)
+        # zagrana 2 przez gracza, wiec dodaj wartosc do cards_to_draw
+        if card.rank == '2':
+            self.cards_to_draw += 2
+            print('jaa',self.cards_to_draw)
+        # Sprawdz czy gracz wygral
         if len(self.player_hand) == 0:
             return {'success': True, 'message': 'Wygrałeś!', **self.get_state()}
         return {
@@ -99,8 +130,19 @@ class Game:
             self.deck = self.discard_pile[:-1]
             self.discard_pile = [self.discard_pile[-1]]
             print('Talia jest pusta, przenoszę odrzucone karty')
-        
-        self.player_hand.append(self.deck.pop())
+        # Sprawdz czy gracz musi dobrac wiecej kart i dobierz je
+        if self.cards_to_draw > 0:
+            for _ in range(self.cards_to_draw):
+                self.player_hand.append(self.deck.pop())
+            how_many = self.cards_to_draw
+            self.cards_to_draw = 0
+            return {'success': True, 
+                    'message': 'Zaciągnąłeś ' + str(how_many) + ' karty',
+                    'computer_turn': self.computer_turn(),
+                    **self.get_state()
+            }
+        else:
+            self.player_hand.append(self.deck.pop())
         return {
             'success': True, 
             'message': 'Zaciągnąłeś ' + str(self.player_hand[-1]), 

@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 updateDiscardPile(data.top_discard);
                 displayComputerHand(data.computer_hand, data.computer_turn.message);
                 displayMessage(data);
+                displayCardSelection(data.player_hand);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const cardParts = playInput.value.split(' ');  // Assuming format "Rank Suit"
+        const cardParts = playInput.value.split(' ');  // format: rank suit
         const card = { rank: cardParts[0], suit: cardParts[1] };
 
         if (cardParts.length !== 2) {
@@ -50,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 updateDiscardPile(data.top_discard);
                 displayComputerHand(data.computer_hand, data.computer_turn.message);
                 displayMessage(data);
+                displayCardSelection(data.player_hand);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -71,16 +73,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     displayComputerHand(data.computer_hand, "");
                 }
                 displayMessage(data);
+                displayCardSelection(data.player_hand);
+                drawButton.disabled = false;
+                playButton.disabled = false;
             })
             .catch(error => {
                 console.error('Error:', error);
         });
     });
-    // Functions to update UI based on server responses
-    // e.g., function updateHand(cards) { ... }
 });
 
-// AJAX functions to communicate with the Flask server
+// AJAX do serwera
 function startGame() {
     try {
         fetch('/start')
@@ -89,11 +92,22 @@ function startGame() {
                 displayPlayerHand(data);
                 updateDiscardPile(data.top_discard);
                 displayComputerHand(data.computer_hand);
-                // Other UI updates as necessary
+                displayCardSelection(data.player_hand);
             });
     } catch (error) {
         console.log(error);
     }
+}
+
+function displayCardSelection(cards) {
+    const cardSelectElement = document.getElementById('play-input');
+    cardSelectElement.innerHTML = ''; // Wyczyść rękę gracza (nwm czy potrzebne do wywalenia jak cos xpp)
+    cards.forEach(card => {
+        const option = document.createElement('option');
+        option.value = `${card.rank} ${card.suit}`;
+        option.textContent = `${card.rank} ${card.suit}`;
+        cardSelectElement.appendChild(option);
+    })
 }
 
 function displayPlayerHand(cards) {
@@ -126,6 +140,7 @@ function updateDiscardPile(card) {
 }
 
 function displayComputerHand(cards, message) {
+    const messageElement = document.getElementById('chat');
     if (!cards) {
         console.error('Invalid or undefined card data');
         return;
@@ -136,6 +151,7 @@ function displayComputerHand(cards, message) {
         let playButton = document.getElementById('play-button');
         drawButton.disabled = true;
         playButton.disabled = true;
+        messageElement.innerHTML += `<p class='win'>${cards.message}</p>`;
         alert('Komputer wygrał! Spróbuj jeszcze raz!');
         return;
     }
