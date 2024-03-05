@@ -36,22 +36,49 @@ document.addEventListener("DOMContentLoaded", () => {
             messageElement.innerHTML += `<p class='error'>Niepoprawny format karty!</p>`;
             return;
         }
+
+        const validRanks = ['5', '6', '7', '8', '9', '10', 'Królowa'];
+        var demandedRank = '';
+
+        if (cardParts[0] === 'Walet') {
+            while (!validRanks.includes(demandedRank)) {
+                demandedRank = prompt("Zagrałeś waleta czego żądasz: " + validRanks.join(", "));
+                if (!validRanks.includes(demandedRank)) {
+                    alert("Niepoprawna forma. spróbuj ponownie: " + validRanks.join(", "));
+                }
+            }
+            console.log(demandedRank); 
+        }
+
+        const validSuits = ['Kier', 'Karo', 'Pik', 'Trefl']
+        var demandedSuit = ''
+
+
+        if (cardParts[0] === 'Ass') {
+            while (!validSuits.includes(demandedSuit)) {
+                demandedSuit = prompt("Zagrałeś Assa, jakiego koloru żądasz: " + validSuits.join(", "));
+                if (!validSuits.includes(demandedSuit)) {
+                    alert("Niepoprawna forma. spróbuj ponownie: " + validSuits.join(", "));
+                }
+            }
+            console.log(demandedSuit)
+        }
         
         fetch('/play', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({card: card}),
+            body: JSON.stringify({card: card, demandedRank: demandedRank, demandedSuit: demandedSuit}),
         })
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 displayPlayerHand(data);
                 updateDiscardPile(data.top_discard);
+                displayCardSelection(data.player_hand);
                 displayComputerHand(data.computer_hand, data.computer_turn.message);
                 displayMessage(data);
-                displayCardSelection(data.player_hand);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -112,6 +139,7 @@ function displayCardSelection(cards) {
 
 function displayPlayerHand(cards) {
     const messageElement = document.getElementById('chat');
+    const handElement = document.getElementById('player-hand');
     if (cards.success === false) {
         messageElement.innerHTML += `<p class='error'>${cards.message}</p>`;
         return;
@@ -125,7 +153,11 @@ function displayPlayerHand(cards) {
         alert('Wygrałeś! Zacznij nową grę!');
         return;
     }
-    const handElement = document.getElementById('player-hand');
+
+    if (cards.message === 'kompik czeka') {
+        messageElement.innerHTML += `<p class='info'>Komputer skipuje ture</p>`;
+    }
+
     handElement.innerHTML = ''; // Wyczyść rękę gracza (nwm czy potrzebne do wywalenia jak cos xpp)
     cards.player_hand.forEach(card => {
         handElement.innerHTML += `<div class="card">${card.rank} ${card.suit}</div>`; // Wyswietl karty gracza
@@ -151,15 +183,12 @@ function displayComputerHand(cards, message) {
         let playButton = document.getElementById('play-button');
         drawButton.disabled = true;
         playButton.disabled = true;
-        messageElement.innerHTML += `<p class='win'>${cards.message}</p>`;
+        messageElement.innerHTML += `<p class='win'>${message}</p>`;
         alert('Komputer wygrał! Spróbuj jeszcze raz!');
         return;
     }
     const handleElement = document.getElementById('computer-hand');
-    handleElement.innerHTML = ''; // Wyczyść rękę komputera (nwm czy potrzebne do wywalenia jak cos xpp)
-    //cards.forEach(card => { //for future debbuging
-    //    handleElement.innerHTML += `<div class="card">${card.rank} of ${card.suit}</div>`; // Wyswietl karty gracza
-    //}); // Wyswietl liczbę kart w ręce komputera
+    handleElement.innerHTML = ''; 
     handleElement.innerHTML += `<div class="card">Komputer ma ${cards.length} kart</div>`; // Wyswietl liczbę kart w ręce komputera
 }
 
@@ -173,5 +202,9 @@ function displayMessage(message) {
         messageElement.innerHTML = `<p class='info'>Rozpoczętą nową gierkę!</p>`;
         return;
     }
-    messageElement.innerHTML += `<p>${message.message}<br>${message.computer_turn.message}</p>`; // Wyswietl wiadomosc
+    if (message.message.includes('Czekasz') || (message.computer_turn && message.computer_turn.message.includes('czeka'))) {
+        messageElement.innerHTML += `<p class='info'>${message.message}<br>${message.computer_turn ? message.computer_turn.message : ''}</p>`;
+    } else {
+        messageElement.innerHTML += `<p>${message.message}<br>${message.computer_turn ? message.computer_turn.message : ''}</p>`;
+    }
 }

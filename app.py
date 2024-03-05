@@ -14,10 +14,9 @@ def index():
 def gam():
     return render_template('game.html')
 
-@app.route('/clear') # Wyczyszczenie sesji - debugging purposes
-def clear():
-    session.clear()
-    return 'OK'
+@app.route('/instruction')
+def instruction():
+    return render_template('instruction.html')
 
 @app.route('/start', methods=['GET'])
 def start_game():
@@ -31,18 +30,25 @@ def start_game():
 @app.route('/new_game', methods=['GET'])
 def new_game():
     global game
-    session.pop('game_state', None)  # Clear the game state in the session
-    game = Game()  # Reassign the global game instance
-    game.start()  # Start a new game
-    session['game_state'] = game.get_state()  # Save the new game state in the session
-    return jsonify(session['game_state'])  # Send the new game state to the frontend
+    session.pop('game_state', None)  # wyczyść stan gry z sesji
+    game = Game()  # Stworzenie nowej gry znowu
+    game.start()  # Rozpoczęcie nowej gry
+    session['game_state'] = game.get_state()  # Zapisanie stanu gry w sesji
+    return jsonify(session['game_state'])  # Zwróć stan gry jako JSON
 
 @app.route('/play', methods=['POST'])
 def play():
     card_data = request.json.get('card')
     card = Card(card_data['rank'], card_data['suit'])
-    return game.play_card(card), game.get_state()
+    demanded_rank = request.get_json().get('demandedRank')
+    demanded_suit = request.get_json().get('demandedSuit')
+    print(demanded_rank)
+    print(demanded_suit)
+    return game.play_card(card, demanded_rank, demanded_suit), game.get_state()
 
 @app.route('/draw', methods=['GET'])
 def draw():
     return game.draw_card(), game.get_state()
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=12125, debug=True)
