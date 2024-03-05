@@ -1,36 +1,129 @@
-/* Basic styles - you can expand and customize these */
-.hand {
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid black;
+body {
+    font-family: 'Arial', sans-serif; 
+    background-color: #f7f5e6; 
+    color: #333; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
 }
 
-#discard-pile, #chat {
-    margin: 10px;
+#game {
+    width: 80%;
+    max-width: 600px; 
+    margin: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+.hand {
+    margin: 10px 0;
     padding: 10px;
-    border: 1px solid black;
-    min-height: 100px;
-    max-height: 200px;
+    border: 1px solid #ccc; 
+    background-color: #fff; 
+    text-align: center; 
 }
 
 #chat {
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: scroll;
+    background-color: #fff; 
+    border: 1px solid #ccc; 
+}
+
+#player-hand {
+    min-height: 50px;
+    max-height: 100px;
     overflow-y: scroll;
 }
 
 #chat > p {
-    margin: 0;
+    margin: 5px 0;
 }
 
-.error {
-    color: red;
+button {
+    background-color: #333; 
+    color: #fff; 
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.win {
-    color: green;
+button:hover {
+    background-color: #555; 
 }
 
-.info {
-    color: blue;
+button:active {
+    background-color: #222; 
 }
 
-/* Further styles for cards, buttons, etc., go here */
+#play-input {
+    width: 100%; 
+    box-sizing: border-box; 
+    text-align: center; 
+}
+
+.error, .win, .info {
+    font-weight: bold;
+    text-align: center;
+}
+
+.error { color: red; }
+.win { color: green; }
+.info { color: blue; }
+
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.link_wrapper{
+    position: relative;
+}
+  
+a{
+    display: block;
+    width: 250px;
+    height: 50px;
+    line-height: 50px;
+    font-weight: bold;
+    text-decoration: none;
+    background: #333;
+    text-align: center;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 3px solid #333;
+    border-radius: 5px;
+    transition: all .35s;
+}
+  
+a:hover{
+    width: 200px;
+    border: 3px solid #522b69;
+    color: #F5F5DC;
+}
+
+.action {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.action > button {
+    line-height: 50px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.cards {
+    width: 100%; 
+    display: flex;
+    justify-content: center; 
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/inst_styles.css') }}">
+    <title>Instrukcja</title>
+</head>
+<body>
+    <main>
+        <h1>Instrukcja</h1>
+        <div class="content">
+            <p>W grze Makao wygrywa ten, kto pierwszy pozbywa się wszystkich kart.</p>
+            <p>Gracz może zagrać kartę, jeśli:</p>
+            <ul>
+                <li>jej wartość jest taka sama jak wartość karty na wierzchu stosu,</li>
+                <li>jej kolor jest taki sam jak kolor karty na wierzchu stosu,</li>
+            </ul>
+            <p>Specjalne karty i ich działanie:</p>
+            <ul>
+                <li>2 oznacza +2 karty dla następnego gracza</li>
+                <li>3 oznacza +3 karty dla następnego gracza</li>
+                <li>4 oznacza ominięcie tury przez następnego gracza</li>
+                <li>Walet pozwala na żądanie wartości nastpenej karty</li>
+                <li>Król Pik lub Król Kier oznacza +5 kart dla następnego gracza</li>
+                <li>As pozwala na żądanie koloru następnej karty</li>
+            </ul>
+            <p>Jeśli któryś gracza rzuci 2, 3, lub specjalne króle, następny może także rzucic 2, 3 lub specjalnego króla dodając tym do wartości kart jaka musi być zaciągnięta
+            przez gracza, który nie ma jak już się bronić
+            </p>
+            <p>Jeśli któryś gracz rzuci 4, następny może także rzucić 4 dodając tym do ogólnej liczby, którą gracz musi ominać, jeśli ten nie ma już 4 w ręce</p>
+            <p>Po rzuceniu waleta i żądaniu, w następnej kolejce tylko żądana karta może zostać zagrana</p>
+        </div>
+        <div class="wrapper">
+            <div class="link_wrapper">
+              <a href="./">Powrót do menu</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
