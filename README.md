@@ -22,4 +22,5 @@ python app.py
 
 ### 3. Graj
 
-Gra odpala się na localhoscie (http://127.0.0.1:12125/)
+Gra odpala się na localhoscie na porcie 12125 (http://127.0.0.1:12125)
+
